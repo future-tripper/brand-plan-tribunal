@@ -15,7 +15,10 @@
     --book: Georgia, "Iowan Old Style", "Times New Roman", serif;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html,body{ height:100%; background:#000; color:var(--warm-white); font-family:var(--mono); overflow:hidden; }
+  html,body{ height:100%; background:#0a0705; color:var(--warm-white); font-family:var(--mono); overflow:hidden; }
+  /* feather the stage edges into the dark surround so wide screens read as a framed scene */
+  #vignette{ position:absolute; inset:0; z-index:10; pointer-events:none;
+    box-shadow:inset 0 0 110px 34px #0a0705; }
   body{ display:flex; align-items:center; justify-content:center; }
   body.still *{ transition:none !important; animation:none !important; }
   #stage{ position:relative; width:1280px; height:800px; flex:none; transform-origin:center center; }
@@ -53,18 +56,18 @@
   #plan .xx{ color:#fff; background:#C45580; padding:0 4px; font-weight:700; animation:pulse 1.6s infinite; }
   @keyframes pulse{50%{background:#7B5EA7}}
 
-  .plant{ position:absolute; bottom:128px; left:3%; width:50px; height:92px; }
+  .plant{ position:absolute; bottom:224px; left:3%; width:50px; height:92px; }
   .plant .pot{ position:absolute; bottom:0; left:8px; width:34px; height:30px; background:#C47040; border-bottom:5px solid #8B3D3D;}
   .plant .leaf{ position:absolute; bottom:26px; left:50%; width:36px; height:42px; transform:translateX(-50%);
     background:radial-gradient(circle at 50% 100%, #7BC47D 0 60%, #3D6B3D 61% 100%);
     clip-path:polygon(50% 0,72% 30%,100% 40%,76% 60%,86% 100%,50% 78%,14% 100%,24% 60%,0 40%,28% 30%);}
 
   /* stations + actors */
-  .desk{ position:absolute; bottom:150px; width:120px; height:44px; transform:translateX(-50%);
+  .desk{ position:absolute; bottom:240px; width:120px; height:44px; transform:translateX(-50%);
     background:linear-gradient(180deg,#5A4D42,#3D3028); border:3px solid var(--ink); border-radius:4px;
     box-shadow:0 10px 22px rgba(0,0,0,.4); opacity:0; transition:opacity .5s ease; }
   .desk.show{ opacity:1; }
-  .actor{ position:absolute; bottom:176px; transform:translateX(-50%) translateY(8px);
+  .actor{ position:absolute; bottom:266px; transform:translateX(-50%) translateY(8px);
     image-rendering:pixelated; filter:drop-shadow(0 5px 0 rgba(0,0,0,.25));
     opacity:0; transition:opacity .55s ease, transform .55s cubic-bezier(.2,1.3,.4,1); }
   .actor.show{ opacity:1; transform:translateX(-50%) translateY(0); }
@@ -93,7 +96,7 @@
   .msgbub.sms{ border-left-color:var(--neon); } .msgbub.sms .mwho{ color:var(--neon); }
 
   /* character intro nametags (over each head) */
-  .nametag{ position:absolute; bottom:352px; transform:translateX(-50%) translateY(8px); width:178px;
+  .nametag{ position:absolute; bottom:442px; transform:translateX(-50%) translateY(8px); width:178px;
     background:#1b1510; border:1px solid #4A3D35; border-top-width:4px; border-radius:9px; padding:8px 10px;
     text-align:center; opacity:0; z-index:24; box-shadow:0 10px 24px rgba(0,0,0,.45);
     transition:opacity .45s ease, transform .45s cubic-bezier(.2,1.3,.4,1); }
@@ -171,10 +174,10 @@
     color:#e8dcc8; white-space:pre-wrap; }
 
   /* FEED */
-  .feed{ position:absolute; left:0; right:0; bottom:0; height:132px; background:#100d0a;
+  .feed{ position:absolute; left:0; right:0; bottom:0; height:222px; background:#100d0a;
     border-top:2px solid #2A231E; padding:9px 16px; font-size:13px; overflow:hidden; z-index:40; }
   .feed .status{ color:var(--green); font-size:12.5px; letter-spacing:1px; margin-bottom:5px; }
-  .feed #feedlines{ display:flex; flex-direction:column; justify-content:flex-end; height:92px; overflow:hidden; }
+  .feed #feedlines{ display:flex; flex-direction:column; justify-content:flex-end; height:180px; overflow:hidden; }
   .feed .ln{ color:#cfc4b4; line-height:1.55; text-wrap:pretty; }
   .feed .ln.fresh{ animation:fade .35s ease; }
   @keyframes fade{from{opacity:0;transform:translateY(4px)}}
@@ -202,13 +205,13 @@
   .finale-big.in{ opacity:1; }
 
   /* CHROME */
-  .nav{ position:absolute; bottom:148px; right:24px; display:flex; gap:10px; z-index:70; }
+  .nav{ position:absolute; bottom:238px; right:24px; display:flex; gap:10px; z-index:70; }
   .btn{ font-family:var(--mono); font-size:13px; letter-spacing:1px; color:#1d1712; background:var(--amber);
     border:3px solid #1d1712; border-radius:6px; padding:8px 14px; cursor:pointer; font-weight:800; box-shadow:0 4px 0 #1d1712;}
   .btn:active{ transform:translateY(3px); box-shadow:0 1px 0 #1d1712; }
   .btn.ghost{ background:transparent; color:var(--warm-white); border-color:#564840; box-shadow:0 4px 0 #2A231E;}
   .btn[disabled]{ opacity:.4; cursor:default; }
-  .hint{ position:absolute; bottom:150px; left:50%; transform:translateX(-50%); font-size:11px; color:#6b6258; z-index:70;}
+  .hint{ position:absolute; bottom:240px; left:50%; transform:translateX(-50%); font-size:11px; color:#6b6258; z-index:70;}
 </style>
 </head>
 <body>
@@ -223,6 +226,7 @@
     <div id="actors"></div>
     <div id="dim"></div>
   </div>
+  <div id="vignette"></div>
 
   <div class="neon"><div class="tag">[ NOW PLAYING ]</div><b>BRAND PLAN</b><b class="small">TRIBUNAL</b></div>
   <div class="scene-label"><div class="sn" id="sn">Prologue</div></div>
@@ -311,7 +315,7 @@ const TAGS={
 const actorsEl=document.getElementById('actors');
 const ACT={};
 ['poet','archivist','revenant','patient'].forEach(id=>{
-  const desk=document.createElement('div'); desk.className='desk'; desk.style.left=STATION[id]+'%'; desk.style.bottom='150px';
+  const desk=document.createElement('div'); desk.className='desk'; desk.style.left=STATION[id]+'%'; desk.style.bottom='240px';
   const wrap=document.createElement('div'); wrap.className='actor'; wrap.style.left=STATION[id]+'%';
   wrap.appendChild(spriteCanvas(SPR[id]));
   const tag=document.createElement('div'); tag.className='nametag '+id; tag.style.left=STATION[id]+'%';
