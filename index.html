@@ -19,11 +19,11 @@
   /* feather the stage edges into the dark surround so wide screens read as a framed scene */
   #vignette{ position:absolute; inset:0; z-index:10; pointer-events:none;
     box-shadow:inset 0 0 110px 34px #0a0705; }
-  body{ display:grid; place-items:center; }
   body.still *{ transition:none !important; animation:none !important; }
-  /* fixed-size design; JS sets `zoom` to fit. zoom resizes the real layout, so centering is
-     handled by normal grid placement — no transform-centering quirks (the Safari problem). */
-  #stage{ position:relative; width:1280px; height:800px; }
+  /* fixed-size design; fit() scales from top-left and sets left/top explicitly to center.
+     No flex/grid/translate centering and no non-standard zoom, so Safari/WebKit can't
+     misinterpret the centering (the bug behind every prior attempt). */
+  #stage{ position:fixed; width:1280px; height:800px; transform-origin:top left; }
   /* rotate hint for portrait phones */
   #rotate{ position:fixed; inset:0; z-index:200; display:none; background:#0a0705; color:#f3ead9;
     flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:10vw;
@@ -533,8 +533,12 @@ window.addEventListener('keydown',e=>{
 const stage=document.getElementById('stage');
 function fit(){ const w=document.documentElement.clientWidth||window.innerWidth,
     h=document.documentElement.clientHeight||window.innerHeight;
-  stage.style.zoom = Math.min(w/1280, h/800); }
+  const s=Math.min(w/1280, h/800);
+  stage.style.transform='scale('+s+')';
+  stage.style.left=Math.round((w-1280*s)/2)+'px';
+  stage.style.top=Math.round((h-800*s)/2)+'px'; }
 ['resize','orientationchange','load'].forEach(ev=>window.addEventListener(ev,fit));
+if(window.visualViewport){ visualViewport.addEventListener('resize',fit); visualViewport.addEventListener('scroll',fit); }
 if(window.ResizeObserver){ try{ new ResizeObserver(fit).observe(document.documentElement); }catch(e){} }
 fit(); requestAnimationFrame(fit); setTimeout(fit,200);
 
