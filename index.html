@@ -19,9 +19,10 @@
   /* feather the stage edges into the dark surround so wide screens read as a framed scene */
   #vignette{ position:absolute; inset:0; z-index:10; pointer-events:none;
     box-shadow:inset 0 0 110px 34px #0a0705; }
-  body{ display:flex; align-items:center; justify-content:center; }
   body.still *{ transition:none !important; animation:none !important; }
-  #stage{ position:relative; width:1280px; height:800px; flex:none; transform-origin:center center; }
+  /* fixed-size design, centered + scaled by JS (translate-centering = reliable cross-browser) */
+  #stage{ position:fixed; left:50%; top:50%; width:1280px; height:800px; transform-origin:center center;
+    transform:translate(-50%,-50%); }
   /* rotate hint for portrait phones */
   #rotate{ position:fixed; inset:0; z-index:200; display:none; background:#0a0705; color:#f3ead9;
     flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:10vw;
@@ -527,11 +528,15 @@ window.addEventListener('keydown',e=>{
   if(critmodal.classList.contains('show')){ if(e.key==='Escape')closeCrit(); return; }
   if(e.key==='ArrowRight'||e.key===' ')next(); if(e.key==='ArrowLeft')back(); });
 
-/* scale the fixed 1280x800 stage to fit any screen */
+/* scale the fixed 1280x800 stage to fit any screen (centered via translate) */
 const stage=document.getElementById('stage');
-function fit(){ const s=Math.min(window.innerWidth/1280, window.innerHeight/800);
-  stage.style.transform=`scale(${s})`; }
-window.addEventListener('resize',fit); fit();
+function fit(){ const w=document.documentElement.clientWidth||window.innerWidth,
+    h=document.documentElement.clientHeight||window.innerHeight;
+  const s=Math.min(w/1280, h/800);
+  stage.style.transform=`translate(-50%,-50%) scale(${s})`; }
+['resize','orientationchange','load'].forEach(ev=>window.addEventListener(ev,fit));
+if(window.ResizeObserver){ try{ new ResizeObserver(fit).observe(document.documentElement); }catch(e){} }
+fit(); requestAnimationFrame(fit); setTimeout(fit,200);
 
 /* tap anywhere (except controls / links / modal) advances */
 stage.addEventListener('click',e=>{
